@@ -1,0 +1,35 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema:
+      - "db/migrations/20240617074708_init"
+    queries: "db/queries"
+    gen:
+      go:
+        sql_package: "pgx/v5"
+        package: "dbrepo"
+        out: "internal/dbrepo"
+        omit_unused_structs: false
+        emit_db_tags: true
+        emit_json_tags: true
+        json_tags_case_style: "snake"
+        emit_exact_table_names: true
+        emit_interface: true
+        emit_result_struct_pointers: true
+        emit_params_struct_pointers: true
+        emit_pointers_for_null_types: true
+        overrides:
+        - db_type: "uuid"
+          go_type: "github.com/google/uuid.UUID"
+          nullable: true
+        - db_type: "text"
+          go_type:
+            type: "string"
+        - db_type: "pg_catalog.timestamp"
+          go_type:
+            import: "time"
+            type: "Time"
+        - db_type: "pg_catalog.timestamptz"
+          go_type:
+            import: "time"
+            type: "Time"

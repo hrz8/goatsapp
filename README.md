@@ -13,11 +13,29 @@ Tools needed:
 - [golang](https://go.dev/dl/) >= 1.22
 - [bun](https://bun.sh/docs/installation) >= 1.1
 
+### Env var
+
+Adjust env variables with your own configuration:
+
+```sh
+cp .env.example .env
+```
+
+### DB Setup
+
+Run database migrations with following command:
+
+```sh
+# in the root dir
+bun run db:migrate:apply
+```
+
 ### Build
 
 Build the web assets with following command:
 
 ```sh
+# change directory to web app folder
 cd web/app
 bun install --frozen-lockfile
 bun run build
@@ -33,7 +51,7 @@ This project is [licensed][LICENSE] under the MIT License.
 
 ## Contact
 
-Hirzi Nurfakhrian
+Hirzi Nurfakhrian - hirzinurfakhrian@gmail.com
 
 Project Link: [https://github.com/hrz8/goatsapp](https://github.com/hrz8/goatsapp)
 
