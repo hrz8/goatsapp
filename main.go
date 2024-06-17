@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
+	"github.com/hrz8/goatsapp/cmd/server"
 	"github.com/hrz8/goatsapp/cmd/version"
 	"github.com/hrz8/goatsapp/config"
 	"github.com/spf13/cobra"
@@ -24,6 +25,7 @@ var cmd = &cobra.Command{
 
 func main() {
 	cmd.AddCommand(version.VersionCmd)
+	cmd.AddCommand(server.ServerCmd)
 
 	if err := cmd.Execute(); err != nil {
 		log.Println(err)
