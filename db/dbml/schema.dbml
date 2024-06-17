@@ -1,0 +1,30 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table devices {
+  id Int [pk, increment]
+  project_id Int [not null]
+  client_id String [not null]
+  name String [not null]
+  phone_number String
+  description String
+  is_active Boolean [not null]
+  custom_attributes Json
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
+  project projects [not null]
+}
+
+Table projects {
+  id Int [pk, increment]
+  name String [not null]
+  alias String [unique, not null]
+  description String
+  settings Json
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
+  devices devices [not null]
+}
+
+Ref: devices.project_id > projects.id
