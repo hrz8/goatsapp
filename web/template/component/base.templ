@@ -1,0 +1,63 @@
+package component
+
+import (
+	"github.com/hrz8/goatsapp/pkg/viewutil"
+)
+
+type Section struct {
+	Styles  []templ.Component
+	Scripts []templ.ComponentScript
+}
+
+templ Loading() {
+	<div class="router-indicator">
+		<div class="indeterminate dark:indeterminate-dark"></div>
+	</div>
+}
+
+templ Base(props Section) {
+	if !viewutil.IsHtmxRequest(ctx) {
+		<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<meta charset="utf-8"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+				<title>Goatsapp - by hrz8</title>
+				// SEO
+				<meta name="description" content="An open source application of unofficial WhatsApp API based on websocket"/>
+				<meta name="author" content="Hirzi Nurfakhrian"/>
+				// CSS
+				<link rel="stylesheet" href="/assets/vendor/fontawesome/css/fontawesome.min.css"/>
+				<link rel="stylesheet" href="/assets/vendor/fontawesome/css/brands.min.css"/>
+				<link rel="stylesheet" href="/assets/vendor/fontawesome/css/solid.min.css"/>
+				<link rel="stylesheet" href="/assets/vendor/fontawesome/css/regular.min.css"/>
+				<link rel="stylesheet" href="/assets/css/bundle.min.css"/>
+				// JS
+				<script src="/assets/vendor/htmx/htmx.min.js"></script>
+			</head>
+			<body
+				class="bg-gray-50 dark:bg-gray-800"
+				hx-indicator=".router-indicator"
+				hx-target="#main-content"
+				hx-select-oob="#main-content,#sidebar-content,#custom-scripts,#custom-styles"
+				hx-swap="none"
+			>
+				@Loading()
+				<span id="custom-styles">
+					for _, style := range props.Styles {
+						@style
+					}
+				</span>
+				{ children... }
+				<script src="/assets/js/bundle.min.js"></script>
+				<span id="custom-scripts">
+					for _, script := range props.Scripts {
+						@script
+					}
+				</span>
+			</body>
+		</html>
+	} else {
+		{ children... }
+	}
+}

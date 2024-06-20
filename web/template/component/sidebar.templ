@@ -1,0 +1,91 @@
+package component
+
+type SidebarProps struct {
+	CurrentPage string
+}
+
+type SidebarItemProps struct {
+	SidebarProps
+	Name  string
+	Label string
+	Href  string
+	Icon  string
+}
+
+func SidebarItems() []SidebarItemProps {
+	return []SidebarItemProps{
+		{
+			Name:  "home",
+			Label: "Home",
+			Href:  "/",
+			Icon:  "fa-solid fa-house",
+		},
+		{
+			Name:  "device",
+			Label: "Devices",
+			Href:  "/devices",
+			Icon:  "fa-solid fa-mobile",
+		},
+		{
+			Name:  "project-settings",
+			Label: "Project Settings",
+			Href:  "/project-settings",
+			Icon:  "fa-solid fa-gears",
+		},
+	}
+}
+
+templ SidebarItem(props SidebarItemProps) {
+	<li>
+		<a
+			href={ templ.URL(props.Href) }
+			class={ "flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700",
+				templ.KV("bg-gray-100 dark:bg-gray-700", props.Name == props.SidebarProps.CurrentPage) }
+		>
+			<i class={ props.Icon }></i>
+			<span class="ml-3" sidebar-toggle-item>{ props.Label }</span>
+		</a>
+	</li>
+}
+
+templ SidebarContent(props SidebarProps) {
+	<div id="sidebar-content" class="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
+		<div
+			class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+		>
+			<ul hx-boost="true" class="pb-2 space-y-2">
+				<li>
+					@ProjectSelector(ProjectSelectorProps{
+						Name:       "sidebar",
+						ExtraClass: "lg:hidden",
+						ButtonID:   "project-button-sidebar",
+						DropdownID: "project-dropdown-sidebar",
+					})
+				</li>
+				for _, item := range SidebarItems() {
+					@SidebarItem(SidebarItemProps{
+						SidebarProps: props,
+						Name:         item.Name,
+						Label:        item.Label,
+						Href:         item.Href,
+						Icon:         item.Icon,
+					})
+				}
+			</ul>
+		</div>
+	</div>
+}
+
+templ Sidebar(props SidebarProps) {
+	<aside
+		id="sidebar"
+		class="fixed top-0 left-0 z-20 flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
+		aria-label="Sidebar"
+	>
+		<div
+			class="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+		>
+			@SidebarContent(props)
+		</div>
+	</aside>
+}

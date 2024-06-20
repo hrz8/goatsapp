@@ -1,0 +1,68 @@
+package component
+
+import (
+	"github.com/hrz8/goatsapp/pkg/viewutil"
+)
+
+type LayoutProps struct {
+	Section
+	ShowNavbar  bool
+	ShowSidebar bool
+	ShowFooter  bool
+	CurrentPage string
+}
+
+templ SidebarBackDrop() {
+	<div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
+}
+
+templ MainWrapper(props LayoutProps, extrasClass string) {
+	<div class={ "relative w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900", extrasClass }>
+		<main id="main-content" class="min-h-[70vh]">
+			{ children... }
+		</main>
+		if props.ShowFooter {
+			@Footer()
+		}
+	</div>
+}
+
+templ Layout(props LayoutProps) {
+	@Base(Section{
+		Styles:  props.Styles,
+		Scripts: props.Scripts,
+	}) {
+		if props.ShowNavbar {
+			@Navbar()
+		}
+		<div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+			if props.ShowSidebar {
+				@Sidebar(SidebarProps{
+					CurrentPage: props.CurrentPage,
+				})
+				@SidebarBackDrop()
+			}
+			if props.ShowSidebar {
+				@MainWrapper(props, "lg:ml-64") {
+					{ children... }
+				}
+			} else {
+				@MainWrapper(props, "") {
+					{ children... }
+				}
+			}
+		</div>
+		if viewutil.IsHtmxRequest(ctx) {
+			<span id="custom-styles">
+				for _, style := range props.Styles {
+					@style
+				}
+			</span>
+			<span id="custom-scripts">
+				for _, script := range props.Scripts {
+					@script
+				}
+			</span>
+		}
+	}
+}
