@@ -5,11 +5,12 @@ go 1.22.1
 require (
 	github.com/a-h/templ v0.2.707
 	github.com/fatih/color v1.17.0
+	github.com/hrz8/gofx v0.1.1
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/sethvargo/go-envconfig v1.0.3
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	go.uber.org/fx v1.22.0
 )
 
