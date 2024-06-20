@@ -8,14 +8,15 @@ import (
 
 type Config struct {
 	AppVersion string
-	AppName    string `env:"APP_NAME,default=goatsapp"`
+	AppPort    string `env:"APP_PORT,default=1543"`
+	AppName    string `env:"APP_NAME,default=Goatsapp"`
 	LogLevel   string `env:"LOG_LEVEL,default=DEBUG"`
 }
 
 func New() *Config {
 	cfg := &Config{AppVersion: Version}
 	if err := envconfig.Process(context.Background(), cfg); err != nil {
-		panic("Can't load configuration file")
+		panic("can't load configuration file")
 	}
 
 	return cfg

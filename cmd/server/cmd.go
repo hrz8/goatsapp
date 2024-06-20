@@ -1,44 +1,35 @@
 package server
 
 import (
-	"fmt"
-	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
+	"net/http"
 
-	"github.com/hrz8/goatsapp/pkg/logger"
-	"github.com/labstack/echo/v4"
+	"github.com/hrz8/goatsapp/config"
+	"github.com/hrz8/goatsapp/internal/exception"
+	"github.com/hrz8/goatsapp/internal/homepage"
+	"github.com/hrz8/goatsapp/internal/static"
+	"github.com/hrz8/gofx"
 	"github.com/spf13/cobra"
 )
 
 var ServerCmd = &cobra.Command{
-	Use:   "server [no options!]",
+	Use:   "serve [no options!]",
 	Short: "Start application server",
 	Run:   run,
 }
 
 func run(_ *cobra.Command, _ []string) {
-	lgr := logger.NewLogger()
-	e := echo.New()
+	cfg := config.New()
 
-	server := &Server{Logger: lgr, HTTP: e}
-	server.Setup()
+	app := gofx.NewApp(&gofx.Config{
+		Version:  cfg.AppVersion,
+		Addr:     "localhost:" + cfg.AppPort,
+		LogLevel: cfg.LogLevel,
+	})
 
-	serverErr := server.Start()
-	defer server.Cleanup()
+	app.AddModules(homepage.Module, static.Module, exception.Module)
+	app.AddProviders(RegisterRouters, config.New)
+	app.AddServers(gofx.NewHTTPServer)
+	app.AddInvokers(func(*http.Server) {})
 
-	select {
-	case sig := <-waitShutdown():
-		lgr.Log.Error(fmt.Sprintf("%s signal triggered", sig))
-	case err := <-serverErr:
-		lgr.Log.Error("cannot start the server", slog.String("err", err.Error()))
-	}
-}
-
-func waitShutdown() <-chan os.Signal {
-	exit := make(chan os.Signal, 1)
-	signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM)
-
-	return exit
+	app.Start()
 }
