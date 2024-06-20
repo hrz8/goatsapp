@@ -12,12 +12,13 @@ Tools needed:
 
 - [golang](https://go.dev/dl/) >= 1.22
 - [bun](https://bun.sh/docs/installation) >= 1.1
+- [templ](https://templ.guide/quick-start/installation) >= v0.2
 
 ### Env var
 
 Adjust env variables with your own configuration:
 
-```sh
+```bash
 cp .env.example .env
 ```
 
@@ -25,7 +26,7 @@ cp .env.example .env
 
 Run database migrations with following command:
 
-```sh
+```bash
 # in the root dir
 bun run db:migrate:apply
 ```
@@ -34,11 +35,37 @@ bun run db:migrate:apply
 
 Build the web assets with following command:
 
-```sh
+```bash
 # change directory to web app folder
 cd web/app
 bun install --frozen-lockfile
 bun run build
+```
+
+Build server templates with following command:
+
+```bash
+# change directory to root dir of project
+templ generate
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Usage
+
+```bash
+# ...
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Development
+
+```bash
+# adding new migration...
+bun run db:migrate:gen
+# update sqlc.yaml on schema field
+sqlc generate
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
