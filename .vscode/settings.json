@@ -1,0 +1,47 @@
+{
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--fast"
+  ],
+  // tailwind
+  "tailwindCSS.includeLanguages": {
+    "templ": "html"
+  },
+  "css.customData": [
+    ".vscode/tailwind.json"
+  ],
+  // web
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  // prettier
+  "prettier.configPath": "./web/app/.prettierrc",
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  // eslint
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.workingDirectories": [
+    {
+      "pattern": "./web/*/"
+    }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ],
+  "eslint.options": {
+    "overrideConfigFile": "./eslint.config.js"
+  },
+  // editor
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  }
+}
