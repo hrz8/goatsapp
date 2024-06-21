@@ -1,7 +1,8 @@
 package homepage
 
 import (
-	"github.com/hrz8/goatsapp/web/template/exception"
+	"net/http"
+
 	"github.com/hrz8/goatsapp/web/template/page"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
@@ -16,7 +17,7 @@ func NewHandler() *Handler {
 func (h *Handler) Index(c echo.Context) error {
 	cc, ok := c.(*gofx.Context)
 	if !ok {
-		return cc.RenderView(exception.InternalServerError())
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return cc.RenderView(page.Home())
+	return cc.RenderView(http.StatusOK, page.Home())
 }

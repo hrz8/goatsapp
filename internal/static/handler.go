@@ -2,6 +2,7 @@ package static
 
 import (
 	"embed"
+	"net/http"
 
 	"github.com/hrz8/goatsapp/web/template/exception"
 	"github.com/hrz8/gofx"
@@ -18,12 +19,13 @@ func (h *Handler) Serve(fs embed.FS) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		cc, ok := c.(*gofx.Context)
 		if !ok {
-			return cc.RenderView(exception.InternalServerError())
+			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
+
 		filePath := c.Request().URL.Path[len("/assets/"):]
 		file, err := fs.Open("public/" + filePath)
 		if err != nil {
-			return cc.RenderView(exception.NotFound())
+			return cc.RenderView(http.StatusOK, exception.NotFound())
 		}
 		defer file.Close()
 

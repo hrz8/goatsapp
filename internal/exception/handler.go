@@ -1,6 +1,8 @@
 package exception
 
 import (
+	"net/http"
+
 	"github.com/hrz8/goatsapp/web/template/exception"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
@@ -15,7 +17,7 @@ func NewHandler() *Handler {
 func (h *Handler) NotFound(c echo.Context) error {
 	cc, ok := c.(*gofx.Context)
 	if !ok {
-		return cc.RenderView(exception.InternalServerError())
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return cc.RenderView(exception.NotFound())
+	return cc.RenderView(http.StatusOK, exception.NotFound())
 }
