@@ -3,6 +3,7 @@ sql:
   - engine: "postgresql"
     schema:
       - "db/migrations/20240617074708_init"
+      - "db/migrations/20240621021227_alter_text"
     queries: "db/queries"
     gen:
       go:
