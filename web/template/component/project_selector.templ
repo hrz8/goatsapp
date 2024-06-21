@@ -58,7 +58,12 @@ templ ProjectSelector(props ProjectSelectorProps) {
 					</li>
 				}
 			</ul>
-			<a href="#" class="flex items-center p-3 text-sm font-medium text-blue-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-blue-500 hover:underline">
+			<a
+				href="#"
+				data-modal-target="add-project-modal"
+				data-modal-toggle="add-project-modal"
+				class="add-project-button flex items-center p-3 text-sm font-medium text-blue-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-blue-500 hover:underline"
+			>
 				<span class="mr-2">
 					<i class="fa-solid fa-file-circle-plus"></i>
 				</span>

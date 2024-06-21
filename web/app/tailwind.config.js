@@ -3,6 +3,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      zIndex: {
+        60: '60',
+      },
       colors: {
         primary: {
           50: '#eff6ff',
