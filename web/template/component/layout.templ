@@ -18,8 +18,14 @@ templ SidebarBackDrop() {
 
 templ MainWrapper(props LayoutProps, extrasClass string) {
 	<div class={ "relative w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900", extrasClass }>
+		@Toast(ToastProps{
+			Message: "",
+			Hidden:  true,
+			Type:    "",
+		})
 		<main id="main-content" class="min-h-[70vh]">
 			{ children... }
+			@ProjectNew()
 		</main>
 		if props.ShowFooter {
 			@Footer()

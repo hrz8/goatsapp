@@ -52,6 +52,14 @@
   display: inline;
 }
 
+.form-indicator {
+  display: none;
+}
+
+.htmx-request.form-indicator {
+  display: block;
+}
+
 @keyframes indeterminate {
   0% {
     left: -35%;
@@ -95,4 +103,9 @@
     left: 107%;
     right: -8%;
   }
+}
+
+.asterisk:after {
+  content: " *";
+  color: red;
 }

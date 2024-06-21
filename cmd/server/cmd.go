@@ -6,6 +6,7 @@ import (
 	"github.com/hrz8/goatsapp/config"
 	"github.com/hrz8/goatsapp/internal/exception"
 	"github.com/hrz8/goatsapp/internal/homepage"
+	"github.com/hrz8/goatsapp/internal/project"
 	"github.com/hrz8/goatsapp/internal/static"
 	"github.com/hrz8/gofx"
 	"github.com/spf13/cobra"
@@ -26,7 +27,12 @@ func run(_ *cobra.Command, _ []string) {
 		LogLevel: cfg.LogLevel,
 	})
 
-	app.AddModules(homepage.Module, static.Module, exception.Module)
+	app.AddModules(
+		homepage.Module,
+		static.Module,
+		exception.Module,
+		project.Module,
+	)
 	app.AddProviders(RegisterRouters, config.New)
 	app.AddServers(gofx.NewHTTPServer)
 	app.AddInvokers(func(*http.Server) {})
