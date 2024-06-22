@@ -6,3 +6,7 @@ type CreateProjectDto struct {
 	WebhookURL  string `form:"webhook_url" validate:"max=255"`
 	Description string `form:"description" validate:"max=140"`
 }
+
+type ListProjectDto struct {
+	Name string `param:"name" validate:"required"`
+}

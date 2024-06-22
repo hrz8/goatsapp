@@ -40,7 +40,7 @@ func (s *Service) CreateProject(c *gofx.Context, payload *CreateProjectDto) erro
 	settings := &Settings{WebhookURL: payload.WebhookURL}
 	projectSettings, err = json.Marshal(settings)
 	if err != nil {
-		s.log.Error(
+		s.log.JSON.Error(
 			"failed when marshaling json",
 			slog.String("event", evt), slog.String("err", err.Error()),
 		)
@@ -55,7 +55,7 @@ func (s *Service) CreateProject(c *gofx.Context, payload *CreateProjectDto) erro
 	}
 	data.Settings = projectSettings
 	if _, err = s.repo.CreateNewProjects(c.Request().Context(), data); err != nil {
-		s.log.Error(
+		s.log.JSON.Error(
 			"failed when store to db",
 			slog.String("event", evt), slog.String("err", err.Error()),
 		)
@@ -63,4 +63,21 @@ func (s *Service) CreateProject(c *gofx.Context, payload *CreateProjectDto) erro
 	}
 
 	return nil
+}
+
+func (s *Service) ListProjects(c *gofx.Context) ([]*dbrepo.GetProjectsRow, error) {
+	evt := "ListProjects"
+	var result []*dbrepo.GetProjectsRow
+	var err error
+
+	result, err = s.repo.GetProjects(c.Request().Context())
+	if err != nil {
+		s.log.JSON.Error(
+			"failed when list projects from db",
+			slog.String("event", evt), slog.String("err", err.Error()),
+		)
+		return result, err
+	}
+
+	return result, nil
 }
