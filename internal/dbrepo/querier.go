@@ -10,7 +10,9 @@ import (
 
 type Querier interface {
 	CreateNewProjects(ctx context.Context, arg *CreateNewProjectsParams) (int32, error)
+	GetDefaultProject(ctx context.Context) (*GetDefaultProjectRow, error)
 	GetProjectByAlias(ctx context.Context, alias string) (*GetProjectByAliasRow, error)
+	GetProjectByEncodedID(ctx context.Context, id int32) (*GetProjectByEncodedIDRow, error)
 	GetProjects(ctx context.Context) ([]*GetProjectsRow, error)
 }
 

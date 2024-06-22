@@ -1,16 +1,6 @@
 package component
 
-func GetProjects(ctx context.Context) []*Project {
-	var projects = make([]*Project, 0)
-	projects = append(projects, &Project{
-		ID:          1,
-		ElementID:   "helper-radio-1",
-		Name:        "Project 1",
-		Description: "Some helpful instruction goes over here.",
-	})
-
-	return projects
-}
+import "github.com/hrz8/goatsapp/internal/dbrepo"
 
 type ProjectSelectorProps struct {
 	Name       string
@@ -19,9 +9,51 @@ type ProjectSelectorProps struct {
 	DropdownID string
 }
 
+func isProjChecked(iter string, active string) bool {
+	return iter == active
+}
+
+templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProjectsRow) {
+	for _, proj := range projects {
+		<li>
+			<div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+				<div class="flex items-center h-5">
+					<input
+						id={ name + "-radio-" + proj.EncodedID }
+						name="helper-radio"
+						type="radio"
+						checked?={ isProjChecked(proj.EncodedID, active) }
+						value={ proj.EncodedID }
+						class="select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+					/>
+				</div>
+				<div class="ms-2 text-sm">
+					<label for={ name + "-radio-" + proj.EncodedID } class="font-medium text-gray-900 dark:text-gray-300">
+						<div>{ proj.Name }</div>
+						<p
+							id={ name + "-radio-" + proj.EncodedID + "-text" }
+							class="text-xs font-normal text-gray-500 dark:text-gray-300"
+						>
+							{ proj.Alias }
+							if proj.Description != nil {
+								{ " - "+*proj.Description }
+							}
+						</p>
+					</label>
+				</div>
+			</div>
+		</li>
+	}
+}
+
 templ ProjectSelector(props ProjectSelectorProps) {
 	<div class={ props.ExtraClass }>
-		<button id={ props.ButtonID } data-dropdown-toggle={ props.DropdownID } class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-full" type="button">
+		<button
+			id={ props.ButtonID }
+			data-dropdown-toggle={ props.DropdownID }
+			class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-full"
+			type="button"
+		>
 			<span class="mr-2">
 				<i class="fa-solid fa-shapes"></i>
 			</span>
@@ -32,32 +64,7 @@ templ ProjectSelector(props ProjectSelectorProps) {
 		</button>
 		<!-- Dropdown menu -->
 		<div id={ props.DropdownID } class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-60 dark:bg-gray-700 dark:divide-gray-600">
-			<ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={ props.ButtonID }>
-				for _, proj := range GetProjects(ctx) {
-					<li>
-						<div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-							<div class="flex items-center h-5">
-								<input
-									id={ props.Name + "-" + proj.ElementID }
-									name="helper-radio"
-									type="radio"
-									value=""
-									class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-								/>
-							</div>
-							<div class="ms-2 text-sm">
-								<label for={ props.Name + "-" + proj.ElementID } class="font-medium text-gray-900 dark:text-gray-300">
-									<div>{ proj.Name }</div>
-									<p
-										id={ props.Name + "-" + proj.ElementID + "-text" }
-										class="text-xs font-normal text-gray-500 dark:text-gray-300"
-									>{ proj.Description }</p>
-								</label>
-							</div>
-						</div>
-					</li>
-				}
-			</ul>
+			<ul hx-get={ "/projects/selector/" + props.Name } hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={ props.ButtonID }></ul>
 			<a
 				href="#"
 				data-modal-target="add-project-modal"

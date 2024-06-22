@@ -39,6 +39,42 @@ func (q *Queries) CreateNewProjects(ctx context.Context, arg *CreateNewProjectsP
 	return id, err
 }
 
+const getDefaultProject = `-- name: GetDefaultProject :one
+SELECT
+    id,
+    encode(digest(id::text || alias, 'sha256'), 'hex') as encoded_id,
+    name,
+    alias,
+    description,
+    settings
+FROM projects
+ORDER BY created_at DESC
+LIMIT 1
+`
+
+type GetDefaultProjectRow struct {
+	ID          int32   `db:"id" json:"id"`
+	EncodedID   string  `db:"encoded_id" json:"encoded_id"`
+	Name        string  `db:"name" json:"name"`
+	Alias       string  `db:"alias" json:"alias"`
+	Description *string `db:"description" json:"description"`
+	Settings    []byte  `db:"settings" json:"settings"`
+}
+
+func (q *Queries) GetDefaultProject(ctx context.Context) (*GetDefaultProjectRow, error) {
+	row := q.db.QueryRow(ctx, getDefaultProject)
+	var i GetDefaultProjectRow
+	err := row.Scan(
+		&i.ID,
+		&i.EncodedID,
+		&i.Name,
+		&i.Alias,
+		&i.Description,
+		&i.Settings,
+	)
+	return &i, err
+}
+
 const getProjectByAlias = `-- name: GetProjectByAlias :one
 SELECT id, alias FROM projects WHERE alias = $1
 `
@@ -55,7 +91,7 @@ func (q *Queries) GetProjectByAlias(ctx context.Context, alias string) (*GetProj
 	return &i, err
 }
 
-const getProjects = `-- name: GetProjects :many
+const getProjectByEncodedID = `-- name: GetProjectByEncodedID :one
 SELECT
     id,
     name,
@@ -63,11 +99,45 @@ SELECT
     description,
     settings
 FROM projects
-ORDER BY created_at ASC
+WHERE encode(digest(id::text || alias, 'sha256'), 'hex') = $1
+`
+
+type GetProjectByEncodedIDRow struct {
+	ID          int32   `db:"id" json:"id"`
+	Name        string  `db:"name" json:"name"`
+	Alias       string  `db:"alias" json:"alias"`
+	Description *string `db:"description" json:"description"`
+	Settings    []byte  `db:"settings" json:"settings"`
+}
+
+func (q *Queries) GetProjectByEncodedID(ctx context.Context, id int32) (*GetProjectByEncodedIDRow, error) {
+	row := q.db.QueryRow(ctx, getProjectByEncodedID, id)
+	var i GetProjectByEncodedIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Alias,
+		&i.Description,
+		&i.Settings,
+	)
+	return &i, err
+}
+
+const getProjects = `-- name: GetProjects :many
+SELECT
+    id,
+    encode(digest(id::text || alias, 'sha256'), 'hex') as encoded_id,
+    name,
+    alias,
+    description,
+    settings
+FROM projects
+ORDER BY created_at DESC
 `
 
 type GetProjectsRow struct {
 	ID          int32   `db:"id" json:"id"`
+	EncodedID   string  `db:"encoded_id" json:"encoded_id"`
 	Name        string  `db:"name" json:"name"`
 	Alias       string  `db:"alias" json:"alias"`
 	Description *string `db:"description" json:"description"`
@@ -85,6 +155,7 @@ func (q *Queries) GetProjects(ctx context.Context) ([]*GetProjectsRow, error) {
 		var i GetProjectsRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.EncodedID,
 			&i.Name,
 			&i.Alias,
 			&i.Description,

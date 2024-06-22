@@ -3,6 +3,7 @@ package project
 import (
 	"net/http"
 
+	"github.com/hrz8/goatsapp/internal/dbrepo"
 	"github.com/hrz8/goatsapp/web/template/component"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
@@ -66,5 +67,40 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 			Hidden:  false,
 			Type:    "success",
 		}),
+	)
+}
+
+func (h *Handler) ListProjectSelector(e echo.Context) error {
+	var err error
+
+	c, ok := e.(*gofx.Context)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	if !c.IsHtmx() {
+		return echo.NewHTTPError(http.StatusMethodNotAllowed)
+	}
+
+	p := new(ListProjectDto)
+	if err = c.Bind(p); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	var ck *http.Cookie
+	ck, err = c.Cookie("app_id")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	curr := ck.Value
+
+	var projects []*dbrepo.GetProjectsRow
+	projects, err = h.svc.ListProjects(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.RenderView(
+		http.StatusOK,
+		component.ProjectSelectorList(p.Name, curr, projects),
 	)
 }
