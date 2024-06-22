@@ -109,3 +109,12 @@
   content: " *";
   color: red;
 }
+
+input.checked {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+  background-size: 1em 1em;
+  border-color: #0000;
+  background-color: currentColor;
+  background-position: 50%;
+  background-repeat: no-repeat
+}

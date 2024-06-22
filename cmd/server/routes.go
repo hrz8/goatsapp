@@ -40,7 +40,7 @@ func RegisterRouters(
 
 	// htmx/ajax
 	router.POST("/projects/new", project.CreateProjectForm)
-	router.GET("/projects/selector/:name", project.ListProjectSelector)
+	router.GET("/projects/selector", project.ListProjectSelector)
 
 	// fallback
 	router.RouteNotFound("", exception.NotFound)

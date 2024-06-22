@@ -13,6 +13,13 @@ func isProjChecked(iter string, active string) bool {
 	return iter == active
 }
 
+func isProjCheckedClass(iter string, active string) string {
+	if iter == active {
+		return "checked"
+	}
+	return ""
+}
+
 templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProjectsRow) {
 	for _, proj := range projects {
 		<li>
@@ -24,7 +31,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 						type="radio"
 						checked?={ isProjChecked(proj.EncodedID, active) }
 						value={ proj.EncodedID }
-						class="select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+						class={ isProjCheckedClass(proj.EncodedID, active), "select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" }
 					/>
 				</div>
 				<div class="ms-2 text-sm">
@@ -64,7 +71,7 @@ templ ProjectSelector(props ProjectSelectorProps) {
 		</button>
 		<!-- Dropdown menu -->
 		<div id={ props.DropdownID } class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-60 dark:bg-gray-700 dark:divide-gray-600">
-			<ul hx-get={ "/projects/selector/" + props.Name } hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={ props.ButtonID }></ul>
+			<ul hx-get={ "/projects/selector?name=" + props.Name } hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={ props.ButtonID }></ul>
 			<a
 				href="#"
 				data-modal-target="add-project-modal"

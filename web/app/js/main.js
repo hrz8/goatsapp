@@ -46,3 +46,23 @@ addProjectForm.addEventListener('htmx:beforeRequest', function (e) {
   const btn = e.detail.elt.querySelector('button[type="submit"');
   btn.classList.add('hidden');
 });
+
+// reset checked project radio button
+function resetCheckedRadioBtnProject() {
+  document.querySelectorAll('.select-project').forEach((el) => {
+    el.addEventListener('click', () => {
+      document
+        .querySelectorAll('.select-project.checked')
+        .forEach((checkedEl) => {
+          checkedEl.classList.remove('checked');
+        });
+    });
+  });
+}
+
+document
+  .querySelector('#project-dropdown-navbar > ul')
+  .addEventListener('htmx:afterRequest', resetCheckedRadioBtnProject);
+document
+  .querySelector('#project-dropdown-sidebar > ul')
+  .addEventListener('htmx:afterRequest', resetCheckedRadioBtnProject);

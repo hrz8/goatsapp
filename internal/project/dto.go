@@ -8,5 +8,5 @@ type CreateProjectDto struct {
 }
 
 type ListProjectDto struct {
-	Name string `param:"name" validate:"required"`
+	Name string `query:"name" validate:"required"`
 }
