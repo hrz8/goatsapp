@@ -27,6 +27,7 @@ func run(_ *cobra.Command, _ []string) {
 		LogLevel: cfg.LogLevel,
 	})
 
+	app.AddProviders(NewDB, NewDBRepo)
 	app.AddModules(
 		homepage.Module,
 		static.Module,

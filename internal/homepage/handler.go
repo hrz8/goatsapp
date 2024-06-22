@@ -14,10 +14,10 @@ func NewHandler() *Handler {
 	return &Handler{}
 }
 
-func (h *Handler) Index(c echo.Context) error {
-	cc, ok := c.(*gofx.Context)
+func (h *Handler) Index(e echo.Context) error {
+	c, ok := e.(*gofx.Context)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return cc.RenderView(http.StatusOK, page.Home())
+	return c.RenderView(http.StatusOK, page.Home())
 }
