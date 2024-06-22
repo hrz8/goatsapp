@@ -14,10 +14,10 @@ func NewHandler() *Handler {
 	return &Handler{}
 }
 
-func (h *Handler) NotFound(c echo.Context) error {
-	cc, ok := c.(*gofx.Context)
+func (h *Handler) NotFound(e echo.Context) error {
+	c, ok := e.(*gofx.Context)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return cc.RenderView(http.StatusOK, exception.NotFound())
+	return c.RenderView(http.StatusOK, exception.NotFound())
 }

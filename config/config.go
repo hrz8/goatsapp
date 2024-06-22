@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	AppVersion string
-	AppPort    string `env:"APP_PORT,default=1543"`
-	AppName    string `env:"APP_NAME,default=Goatsapp"`
-	LogLevel   string `env:"LOG_LEVEL,default=DEBUG"`
+	AppVersion  string
+	AppPort     string `env:"APP_PORT,default=1543"`
+	AppName     string `env:"APP_NAME,default=Goatsapp"`
+	LogLevel    string `env:"LOG_LEVEL,default=DEBUG"`
+	DatabaseURL string `env:"DATABASE_URL"`
 }
 
 func New() *Config {

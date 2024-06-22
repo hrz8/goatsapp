@@ -10,38 +10,30 @@ import (
 
 type Handler struct {
 	log *gofx.Logger
+	svc *Service
 }
 
-func NewHandler(log *gofx.Logger) *Handler {
-	return &Handler{
-		log: log,
-	}
+func NewHandler(log *gofx.Logger, svc *Service) *Handler {
+	return &Handler{log, svc}
 }
 
-type CreateProjectDto struct {
-	Name        string `form:"name" validate:"required,min=49,max=50"`
-	Alias       string `form:"alias" validate:"required,min=5,max=20"`
-	WebhookURL  string `form:"webhook_url" validate:"max=255"`
-	Description string `form:"description" validate:"max=140"`
-}
-
-func (h *Handler) CreateProjectForm(c echo.Context) error {
+func (h *Handler) CreateProjectForm(e echo.Context) error {
 	var err error
 
-	cc, ok := c.(*gofx.Context)
+	c, ok := e.(*gofx.Context)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	p := new(CreateProjectDto)
-	if err = cc.Bind(p); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-	if !cc.IsHtmx() {
+	if !c.IsHtmx() {
 		return echo.NewHTTPError(http.StatusMethodNotAllowed)
 	}
 
+	p := new(CreateProjectDto)
+	if err = c.Bind(p); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
 	if err = c.Validate(p); err != nil {
-		return cc.RenderView(
+		return c.RenderView(
 			http.StatusUnprocessableEntity,
 			component.Toast(component.ToastProps{
 				Message: err.Error(),
@@ -50,7 +42,24 @@ func (h *Handler) CreateProjectForm(c echo.Context) error {
 			}),
 		)
 	}
-	return cc.RenderView(
+
+	exist := h.svc.IsAliasExist(c, p.Alias)
+	if exist {
+		return c.RenderView(
+			http.StatusUnprocessableEntity,
+			component.Toast(component.ToastProps{
+				Message: "Project with alias: " + p.Alias + " already exist",
+				Hidden:  false,
+				Type:    "failed",
+			}),
+		)
+	}
+
+	if err = h.svc.CreateProject(c, p); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.RenderView(
 		http.StatusOK,
 		component.Toast(component.ToastProps{
 			Message: "Project created successfully!",

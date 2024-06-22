@@ -6,11 +6,12 @@ SELECT
     description,
     settings
 FROM projects
-WHERE
-    1 = 1
 ORDER BY created_at ASC;
 
--- name: CreateNewProjects :copyfrom
+-- name: GetProjectByAlias :one
+SELECT id, alias FROM projects WHERE alias = $1;
+
+-- name: CreateNewProjects :one
 INSERT INTO
     projects (
         name,
@@ -18,4 +19,4 @@ INSERT INTO
         description,
         settings
     )
-VALUES ($1, $2, $3, $4);
+VALUES ($1, $2, $3, $4) RETURNING id;
