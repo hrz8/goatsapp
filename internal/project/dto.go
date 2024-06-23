@@ -10,3 +10,7 @@ type CreateProjectDto struct {
 type ListProjectDto struct {
 	Name string `query:"name" validate:"required"`
 }
+
+type SwitchProjectDto struct {
+	ProjectID string `form:"project_id" validate:"required"`
+}
