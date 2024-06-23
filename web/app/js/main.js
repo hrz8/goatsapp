@@ -35,11 +35,11 @@ addProjectForm.addEventListener('htmx:afterRequest', function (e) {
       e.detail.elt.reset();
     }
 
-    const dismiss = new Dismiss(
+    const toast = new Dismiss(
       document.querySelector('#toast'),
       document.querySelector('#toast-dismisser'),
     );
-    setTimeout(() => dismiss.hide(), 5000);
+    setTimeout(() => toast.hide(), 5000);
   }
 });
 addProjectForm.addEventListener('htmx:beforeRequest', function (e) {
@@ -47,22 +47,25 @@ addProjectForm.addEventListener('htmx:beforeRequest', function (e) {
   btn.classList.add('hidden');
 });
 
-// reset checked project radio button
-function resetCheckedRadioBtnProject() {
-  document.querySelectorAll('.select-project').forEach((el) => {
-    el.addEventListener('click', () => {
-      document
-        .querySelectorAll('.select-project.checked')
-        .forEach((checkedEl) => {
-          checkedEl.classList.remove('checked');
-        });
+function clearCheckedRadioBtnProject() {
+  document.querySelectorAll('.select-project.checked').forEach((checkedEl) => {
+    checkedEl.classList.remove('checked');
+  });
+}
+
+function switchProject(radio) {
+  const form = radio.closest('form');
+  const submit = form.querySelector('button[type=submit]');
+  submit.click();
+}
+
+function projectSelectorOnLoad(dropdown) {
+  document.querySelectorAll(dropdown + ' .select-project').forEach((el) => {
+    el.addEventListener('click', function () {
+      clearCheckedRadioBtnProject();
+      switchProject(this);
     });
   });
 }
 
-document
-  .querySelector('#project-dropdown-navbar > ul')
-  .addEventListener('htmx:afterRequest', resetCheckedRadioBtnProject);
-document
-  .querySelector('#project-dropdown-sidebar > ul')
-  .addEventListener('htmx:afterRequest', resetCheckedRadioBtnProject);
+window.projectSelectorOnLoad = projectSelectorOnLoad;

@@ -104,3 +104,36 @@ func (h *Handler) ListProjectSelector(e echo.Context) error {
 		component.ProjectSelectorList(p.Name, curr, projects),
 	)
 }
+
+func (h *Handler) SwitchProject(e echo.Context) error {
+	var err error
+
+	c, ok := e.(*gofx.Context)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	if !c.IsHtmx() {
+		return echo.NewHTTPError(http.StatusMethodNotAllowed)
+	}
+
+	p := new(SwitchProjectDto)
+	if err = c.Bind(p); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	cookie := new(http.Cookie)
+	cookie.Name = "app_id"
+	cookie.Value = p.ProjectID
+	cookie.Path = "/"
+	c.SetCookie(cookie)
+
+	// return c.String(http.StatusOK, "ok")
+	return c.RenderView(
+		http.StatusOK,
+		component.Toast(component.ToastProps{
+			Message: "Please wait, refreshing the page...",
+			Hidden:  false,
+			Type:    "success",
+		}),
+	)
+}

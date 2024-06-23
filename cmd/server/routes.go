@@ -3,12 +3,12 @@ package server
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/hrz8/goatsapp/assets"
-	"github.com/hrz8/goatsapp/internal/dbrepo"
-	"github.com/hrz8/goatsapp/internal/exception"
-	"github.com/hrz8/goatsapp/internal/homepage"
+	Exception "github.com/hrz8/goatsapp/internal/exception"
+	Homepage "github.com/hrz8/goatsapp/internal/homepage"
+	Middleware "github.com/hrz8/goatsapp/internal/middleware"
 	Project "github.com/hrz8/goatsapp/internal/project"
-	"github.com/hrz8/goatsapp/internal/static"
-	"github.com/hrz8/goatsapp/pkg/middleware"
+	Static "github.com/hrz8/goatsapp/internal/static"
+
 	"github.com/hrz8/gofx"
 )
 
@@ -21,18 +21,17 @@ func (cv *CustomValidator) Validate(i any) error {
 }
 
 func RegisterRouters(
-	repo *dbrepo.Queries,
-	// modules
-	homepage *homepage.Handler,
-	static *static.Handler,
-	exception *exception.Handler,
+	middleware *Middleware.Handler,
+	homepage *Homepage.Handler,
+	static *Static.Handler,
+	exception *Exception.Handler,
 	project *Project.Handler,
 ) *gofx.Router {
 	router := gofx.NewRouter()
 
 	// global setup
 	router.Mux.Validator = &CustomValidator{validator.New()}
-	router.Use(middleware.AppIDCookie(repo))
+	router.Use(middleware.AppIDCookie)
 
 	// views
 	router.GET("/", homepage.Index)
@@ -41,6 +40,7 @@ func RegisterRouters(
 	// htmx/ajax
 	router.POST("/projects/new", project.CreateProjectForm)
 	router.GET("/projects/selector", project.ListProjectSelector)
+	router.POST("/projects/switch", project.SwitchProject)
 
 	// fallback
 	router.RouteNotFound("", exception.NotFound)

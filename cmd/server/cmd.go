@@ -6,6 +6,7 @@ import (
 	"github.com/hrz8/goatsapp/config"
 	"github.com/hrz8/goatsapp/internal/exception"
 	"github.com/hrz8/goatsapp/internal/homepage"
+	"github.com/hrz8/goatsapp/internal/middleware"
 	"github.com/hrz8/goatsapp/internal/project"
 	"github.com/hrz8/goatsapp/internal/static"
 	"github.com/hrz8/gofx"
@@ -29,6 +30,7 @@ func run(_ *cobra.Command, _ []string) {
 
 	app.AddProviders(NewDB, NewDBRepo)
 	app.AddModules(
+		middleware.Module,
 		homepage.Module,
 		static.Module,
 		exception.Module,
