@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/hrz8/goatsapp/config"
+	"github.com/hrz8/goatsapp/internal/device"
 	"github.com/hrz8/goatsapp/internal/exception"
 	"github.com/hrz8/goatsapp/internal/homepage"
 	"github.com/hrz8/goatsapp/internal/middleware"
@@ -32,6 +33,7 @@ func run(_ *cobra.Command, _ []string) {
 	app.AddModules(
 		middleware.Module,
 		homepage.Module,
+		device.Module,
 		static.Module,
 		exception.Module,
 		project.Module,

@@ -17,7 +17,7 @@ const config = {
   allowOverwrite: true,
   outbase: 'src',
   outdir: '../../assets/public/',
-  target: ['es2020', 'chrome58', 'edge16', 'firefox57', 'safari11'],
+  // target: ['es2020', 'chrome58', 'edge16', 'firefox57', 'safari11'],
   loader: {
     '.png': 'dataurl',
     '.woff': 'dataurl',

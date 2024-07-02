@@ -5,6 +5,7 @@ import (
 
 	"github.com/hrz8/goatsapp/internal/dbrepo"
 	"github.com/hrz8/goatsapp/web/template/component"
+	"github.com/hrz8/goatsapp/web/template/page"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
 )
@@ -16,6 +17,14 @@ type Handler struct {
 
 func NewHandler(log *gofx.Logger, svc *Service) *Handler {
 	return &Handler{log, svc}
+}
+
+func (h *Handler) Settings(e echo.Context) error {
+	c, ok := e.(*gofx.Context)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return c.RenderView(http.StatusOK, page.ProjectSettings())
 }
 
 func (h *Handler) CreateProjectForm(e echo.Context) error {
@@ -38,7 +47,6 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 			http.StatusUnprocessableEntity,
 			component.Toast(component.ToastProps{
 				Message: err.Error(),
-				Hidden:  false,
 				Type:    "failed",
 			}),
 		)
@@ -50,7 +58,6 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 			http.StatusUnprocessableEntity,
 			component.Toast(component.ToastProps{
 				Message: "Project with alias: " + p.Alias + " already exist",
-				Hidden:  false,
 				Type:    "failed",
 			}),
 		)
@@ -63,8 +70,7 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 	return c.RenderView(
 		http.StatusOK,
 		component.Toast(component.ToastProps{
-			Message: "Project created successfully!",
-			Hidden:  false,
+			Message: "Project created, reloading...",
 			Type:    "success",
 		}),
 	)
@@ -87,7 +93,7 @@ func (h *Handler) ListProjectSelector(e echo.Context) error {
 	}
 
 	var ck *http.Cookie
-	ck, err = c.Cookie("app_id")
+	ck, err = c.Cookie("project_id")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
@@ -122,17 +128,15 @@ func (h *Handler) SwitchProject(e echo.Context) error {
 	}
 
 	cookie := new(http.Cookie)
-	cookie.Name = "app_id"
+	cookie.Name = "project_id"
 	cookie.Value = p.ProjectID
 	cookie.Path = "/"
 	c.SetCookie(cookie)
 
-	// return c.String(http.StatusOK, "ok")
 	return c.RenderView(
 		http.StatusOK,
 		component.Toast(component.ToastProps{
-			Message: "Please wait, refreshing the page...",
-			Hidden:  false,
+			Message: "Reloading, please wait...",
 			Type:    "success",
 		}),
 	)

@@ -4,6 +4,9 @@ sql:
     schema:
       - "db/migrations/20240617074708_init"
       - "db/migrations/20240621021227_alter_text"
+      - "db/migrations/20240627054219_add_jid"
+      - "db/migrations/20240701074610_rename_device_client_id"
+      - "db/migrations/20240702095608_set_device_active_default"
     queries: "db/queries"
     gen:
       go:

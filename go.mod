@@ -6,7 +6,7 @@ require (
 	github.com/a-h/templ v0.2.707
 	github.com/fatih/color v1.17.0
 	github.com/go-playground/validator/v10 v10.22.0
-	github.com/hrz8/gofx v0.1.3
+	github.com/hrz8/gofx v0.1.4
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0

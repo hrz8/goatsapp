@@ -99,7 +99,7 @@ SELECT
     description,
     settings
 FROM projects
-WHERE encode(digest(id::text || alias, 'sha256'), 'hex') = $1
+WHERE encode(digest(id::text || alias, 'sha256'), 'hex') = $1::text
 `
 
 type GetProjectByEncodedIDRow struct {
@@ -110,8 +110,8 @@ type GetProjectByEncodedIDRow struct {
 	Settings    []byte  `db:"settings" json:"settings"`
 }
 
-func (q *Queries) GetProjectByEncodedID(ctx context.Context, id int32) (*GetProjectByEncodedIDRow, error) {
-	row := q.db.QueryRow(ctx, getProjectByEncodedID, id)
+func (q *Queries) GetProjectByEncodedID(ctx context.Context, dollar_1 string) (*GetProjectByEncodedIDRow, error) {
+	row := q.db.QueryRow(ctx, getProjectByEncodedID, dollar_1)
 	var i GetProjectByEncodedIDRow
 	err := row.Scan(
 		&i.ID,

@@ -1,0 +1,33 @@
+package page
+
+import (
+	"github.com/hrz8/goatsapp/web/template/component"
+)
+
+script ProjectSettingsScript() {
+}
+
+templ ProjectSettingsStyle() {
+	<style></style>
+}
+
+templ ProjectSettingsGlobalEl() {
+	<div></div>
+}
+
+templ ProjectSettings() {
+	@component.Layout(component.LayoutProps{
+		Section: component.Section{
+			Styles:   []templ.Component{ProjectSettingsStyle()},
+			Scripts:  []templ.ComponentScript{ProjectSettingsScript()},
+			GlobalEl: []templ.Component{ProjectSettingsGlobalEl()},
+		},
+		ShowNavbar:  true,
+		ShowSidebar: true,
+		ShowFooter:  false,
+		CurrentPage: "project-settings",
+	}) {
+		<div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"></div>
+		<div class="flex flex-col"></div>
+	}
+}

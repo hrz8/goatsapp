@@ -18,8 +18,8 @@ github.com/go-playground/validator/v10 v10.22.0 h1:k6HsTZ0sTnROkhS//R0O+55JgM8C4
 github.com/go-playground/validator/v10 v10.22.0/go.mod h1:dbuPbCMFw/DrkbEynArYaCwl3amGuJotoKCe95atGMM=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/hrz8/gofx v0.1.3 h1:2zJogJ9BGllXvodorGM9owSqv5xT8+fCs4lRFniDtIo=
-github.com/hrz8/gofx v0.1.3/go.mod h1:P4ZUOj+rs/sBI2lxfwC21S2bbXYeMlbvX7A7L6r7xvw=
+github.com/hrz8/gofx v0.1.4 h1:YUt1BfuoyqZsU7wS9fSN+UxgHAKiunA3mUVyIsFLM5E=
+github.com/hrz8/gofx v0.1.4/go.mod h1:P4ZUOj+rs/sBI2lxfwC21S2bbXYeMlbvX7A7L6r7xvw=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=

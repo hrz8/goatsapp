@@ -29,7 +29,7 @@ SELECT
     description,
     settings
 FROM projects
-WHERE encode(digest(id::text || alias, 'sha256'), 'hex') = $1;
+WHERE encode(digest(id::text || alias, 'sha256'), 'hex') = $1::text;
 
 -- name: GetProjectByAlias :one
 SELECT id, alias FROM projects WHERE alias = $1;

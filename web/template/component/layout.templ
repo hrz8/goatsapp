@@ -23,20 +23,21 @@ templ MainWrapper(props LayoutProps, extrasClass string) {
 			Hidden:  true,
 			Type:    "",
 		})
-		<main id="main-content" class="min-h-[70vh]">
+		<main id="main-content" class="min-h-[90vh] relative">
 			{ children... }
 			@ProjectNew()
+			if props.ShowFooter {
+				@Footer()
+			}
 		</main>
-		if props.ShowFooter {
-			@Footer()
-		}
 	</div>
 }
 
 templ Layout(props LayoutProps) {
 	@Base(Section{
-		Styles:  props.Styles,
-		Scripts: props.Scripts,
+		Styles:   props.Styles,
+		Scripts:  props.Scripts,
+		GlobalEl: props.GlobalEl,
 	}) {
 		if props.ShowNavbar {
 			@Navbar()
@@ -62,6 +63,11 @@ templ Layout(props LayoutProps) {
 			<span id="custom-styles">
 				for _, style := range props.Styles {
 					@style
+				}
+			</span>
+			<span id="global-el">
+				for _, el := range props.GlobalEl {
+					@el
 				}
 			</span>
 			<span id="custom-scripts">

@@ -8,6 +8,9 @@
     "build:tailwind": "tailwindcss --minify -i ./css/style.css -o ../../assets/public/css/bundle.min.css"
   },
   "devDependencies": {
+    "@codemirror/basic-setup": "0.20.0",
+    "@codemirror/commands": "0.20.0",
+    "@codemirror/lang-json": "0.20.0",
     "@eslint/js": "^9.5.0",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@types/bun": "latest",

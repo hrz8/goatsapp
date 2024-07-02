@@ -1,0 +1,358 @@
+package page
+
+import (
+	"github.com/hrz8/goatsapp/web/template/component"
+)
+
+templ DeviceNewLoading() {
+	<button type="button" class=" flex form-indicator px-5 py-2.5 text-gray-900 font-medium focus:ring-4 bg-white rounded-lg border text-sm text-center border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" disabled>
+		@component.Spinner()
+		Loading...
+	</button>
+}
+
+script DeviceScript() {
+	const codeMirror = CodeMirror();
+	codeMirror.init(document.querySelector("#custom-attr-editor"));
+
+	const form = document.querySelector("#add-device-form");
+	form.addEventListener('submit', function(e) {
+		e.preventDefault()
+		const textarea = document.querySelector("#add-device-custom-attr");
+		textarea.value = JSON.stringify(codeMirror.value());
+	});
+
+	function setAlert(msg) {
+		const alert = document.querySelector('#add-device-alert');
+		const alertContent = alert.querySelector('.form-alert-text');
+		alertContent.innerHTML = msg;
+
+		alert.classList.remove('hidden');
+		alert.classList.add('flex');
+
+		setTimeout(() => {
+			alert.classList.remove('flex');
+			alert.classList.add('hidden');
+		}, 3000);
+	}
+
+	function toggleSubmitBtn(el, tog) {
+		const btn = el.querySelector('button[type="submit"');
+
+		if (tog === 'show') {
+			btn.classList.remove('hidden');
+			btn.classList.add('block');
+		} else if (tog === 'hide') {
+			btn.classList.remove('block');
+			btn.classList.add('hidden');
+		}
+	}
+
+	htmxForm(form, {
+		before(e) {
+			const btn = e.detail.elt.querySelector('button[type="submit"');
+			const textarea = document.querySelector('#add-device-custom-attr');
+			toggleSubmitBtn(e.detail.elt, 'hide');
+
+			try {
+				JSON.parse(codeMirror.value());
+			} catch (err) {
+				setAlert('Invalid custom attributes');
+				e.preventDefault();
+				toggleSubmitBtn(e.detail.elt, 'show');
+			}
+		},
+		after(e) {
+			if (e.detail.xhr.status === 500) {
+				toggleSubmitBtn(e.detail.elt, 'show');
+
+				const {response} = e.detail.xhr;
+				const res = JSON.parse(response);
+				setAlert(res.message);
+				return;
+			}
+
+			initFlowbite();
+			toggleSubmitBtn(e.detail.elt, 'hide');
+
+			const toast = FlowbiteInstances.getInstance('Dismiss', 'toast');
+			const drawer = FlowbiteInstances.getInstance('Drawer', 'add-device-drawer');
+
+			if (e.detail.xhr.status === 200 || e.detail.xhr.status === 422) {
+				if (e.detail.xhr.status === 200) {
+					drawer.hide();
+					toggleSubmitBtn(e.detail.elt, 'show');
+					e.detail.elt.reset();
+				}
+
+				setTimeout(() => toast.hide(), 5000);
+			}
+		}
+	})
+}
+
+templ DeviceStyle() {
+	<style></style>
+}
+
+templ DeviceGlobalEl() {
+	<div
+		id="add-device-drawer"
+		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
+		tabindex="-1"
+		aria-labelledby="drawer-label"
+		aria-hidden="true"
+	>
+		<h5
+			id="drawer-label"
+			class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400"
+		>
+			New Device
+		</h5>
+		<button
+			type="button"
+			class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+			data-drawer-hide="add-device-drawer"
+		>
+			<i class="fa-solid fa-xmark"></i>
+			<span class="sr-only">Close drawer</span>
+		</button>
+		<div id="add-device-alert" class="hidden items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+			<span class="sr-only">Error Info</span><i class="fa-solid fa-circle-info"></i>
+			<div class="form-alert-text ms-3 text-sm font-medium"></div>
+			<button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" data-dismiss-target="#add-device-alert" aria-label="Close">
+				<span class="sr-only">Close</span><i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+		<form id="add-device-form" hx-indicator=".form-indicator" hx-post="/devices/new" hx-swap="outerHTML" hx-target="#toast" hx-select="#toast">
+			<div class="space-y-4">
+				<div>
+					<label
+						for="add-device-name"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisk"
+					>Name</label>
+					<input
+						type="text"
+						name="name"
+						id="add-device-name"
+						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="Marketing device"
+						required
+					/>
+				</div>
+				<div>
+					<label
+						for="add-client-device-id"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisk"
+					>Client Device ID</label>
+					<input
+						type="text"
+						name="client_device_id"
+						id="add-client-device-id"
+						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="Your integration device id"
+						required
+					/>
+				</div>
+				<div>
+					<label
+						for="add-device-description"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+					>Description</label>
+					<textarea
+						name="description"
+						id="add-device-description"
+						rows="4"
+						class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="This is a device for marketing's team..."
+					></textarea>
+				</div>
+				<div>
+					<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custom Attributes</label>
+					<div
+						id="custom-attr-editor"
+						style="border: 1px #cacaca solid; border-radius: 8px;"
+					></div>
+					<textarea id="add-device-custom-attr" name="custom_attributes" class="hidden">abc</textarea>
+				</div>
+				<div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
+					<button
+						type="submit"
+						class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+					>
+						Add device
+					</button>
+					@DeviceNewLoading()
+					<button
+						type="button"
+						class="inline-flex w-full justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+						data-drawer-hide="add-device-drawer"
+					>
+						<i class="fa-solid fa-xmark"></i>&nbsp;Cancel
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+}
+
+templ Device() {
+	@component.Layout(component.LayoutProps{
+		Section: component.Section{
+			Styles:   []templ.Component{DeviceStyle()},
+			Scripts:  []templ.ComponentScript{DeviceScript()},
+			GlobalEl: []templ.Component{DeviceGlobalEl()},
+		},
+		ShowNavbar:  true,
+		ShowSidebar: true,
+		ShowFooter:  false,
+		CurrentPage: "device",
+	}) {
+		<div class="grid grid-cols-1 px-4 pt-2 xl:grid-cols-3 xl:gap-4 dark:bg-gray-900">
+			@component.PageHeader("Devices")
+		</div>
+		<div class="mx-4 bg-white rounded-lg shadow dark:bg-gray-800">
+			<div class="p-4 md:p-6 w-full mb-1">
+				<div class="sm:flex">
+					<div class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
+						<form class="lg:pr-3" action="#" method="GET">
+							<label for="device-search" class="sr-only">Search</label>
+							<div class="relative mt-1 lg:w-64 xl:w-96">
+								<input
+									type="text"
+									name="email"
+									id="device-search"
+									class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+									placeholder="Search..."
+								/>
+							</div>
+						</form>
+					</div>
+					<div class="flex items-center ml-auto space-x-2 sm:space-x-3">
+						<button
+							type="button"
+							class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+							data-drawer-target="add-device-drawer"
+							data-drawer-show="add-device-drawer"
+							data-drawer-placement="right"
+							aria-controls="add-device-drawer"
+						>
+							<span class="w-5 h-5 mr-2 -ml-1">
+								<i class="fa-regular fa-square-plus"></i>
+							</span>
+							Add device
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-col">
+				<div class="overflow-x-auto">
+					<div class="inline-block min-w-full align-middle">
+						<div class="overflow-hidden shadow">
+							<table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+								<thead class="bg-gray-100 dark:bg-gray-700">
+									<tr>
+										<th scope="col" class="p-4">
+											<div class="flex items-center">
+												<input
+													id="checkbox-all"
+													aria-describedby="checkbox-1"
+													type="checkbox"
+													class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+												/>
+												<label for="checkbox-all" class="sr-only">checkbox</label>
+											</div>
+										</th>
+										<th
+											scope="col"
+											class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+										>
+											Name
+										</th>
+										<th
+											scope="col"
+											class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+										>
+											Country
+										</th>
+										<th
+											scope="col"
+											class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+										>
+											Status
+										</th>
+										<th
+											scope="col"
+											class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+										>
+											Actions
+										</th>
+									</tr>
+								</thead>
+								<tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+									<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+										<td class="w-4 p-4">
+											<div class="flex items-center">
+												<input
+													id="checkbox-1"
+													aria-describedby="checkbox-1"
+													type="checkbox"
+													class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+												/>
+												<label for="checkbox-1" class="sr-only">checkbox</label>
+											</div>
+										</td>
+										<td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
+											<img
+												class="w-10 h-10 rounded-full"
+												src="https://flowbite-admin-dashboard.vercel.app/images/users/neil-sims.png"
+												alt="Neil Sims avatar"
+											/>
+											<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
+												<div class="text-base font-semibold text-gray-900 dark:text-white">
+													Neil Sims
+												</div>
+												<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
+													neil.sims@flowbite.com
+												</div>
+											</div>
+										</td>
+										<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+											United States
+										</td>
+										<td class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
+											<div class="flex items-center">
+												<div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
+												Active
+											</div>
+										</td>
+										<td class="p-4 space-x-2 whitespace-nowrap">
+											<button
+												type="button"
+												class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+											>
+												<span class="w-4 h-4 mr-2">
+													<i class="fa-regular fa-pen-to-square"></i>
+												</span>
+												Edit user
+											</button>
+											<button
+												type="button"
+												class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
+											>
+												<span class="w-4 h-4 mr-2">
+													<i class="fa-regular fa-trash-can"></i>
+												</span>
+												Delete user
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

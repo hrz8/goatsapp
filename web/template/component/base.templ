@@ -5,8 +5,9 @@ import (
 )
 
 type Section struct {
-	Styles  []templ.Component
-	Scripts []templ.ComponentScript
+	Styles   []templ.Component
+	Scripts  []templ.ComponentScript
+	GlobalEl []templ.Component
 }
 
 templ Loading() {
@@ -23,6 +24,11 @@ templ Base(props Section) {
 				<meta charset="utf-8"/>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 				<title>Goatsapp - by hrz8</title>
+				<link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico"/>
+				<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png"/>
+				<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png"/>
+				<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png"/>
+				<link rel="manifest" href="/assets/favicon/site.webmanifest"/>
 				// SEO
 				<meta name="description" content="An open source application of unofficial WhatsApp API based on websocket"/>
 				<meta name="author" content="Hirzi Nurfakhrian"/>
@@ -39,7 +45,7 @@ templ Base(props Section) {
 				class="bg-gray-50 dark:bg-gray-800"
 				hx-indicator=".router-indicator"
 				hx-target="#main-content"
-				hx-select-oob="#main-content,#sidebar-content,#custom-scripts,#custom-styles"
+				hx-select-oob="#main-content,#sidebar-content,#custom-styles,#custom-scripts,#global-el"
 				hx-swap="none"
 			>
 				@Loading()
@@ -49,6 +55,11 @@ templ Base(props Section) {
 					}
 				</span>
 				{ children... }
+				<span id="global-el">
+					for _, el := range props.GlobalEl {
+						@el
+					}
+				</span>
 				<script src="/assets/js/bundle.min.js"></script>
 				<span id="custom-scripts">
 					for _, script := range props.Scripts {

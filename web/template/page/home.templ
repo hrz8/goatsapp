@@ -8,30 +8,30 @@ script HomeScript() {
 }
 
 templ HomeStyle() {
-	<style>
-    </style>
+	<style></style>
+}
+
+templ HomeGlobalEl() {
+	<div></div>
 }
 
 templ Home() {
 	@component.Layout(component.LayoutProps{
 		Section: component.Section{
-			Styles:  []templ.Component{HomeStyle()},
-			Scripts: []templ.ComponentScript{HomeScript()},
+			Styles:   []templ.Component{HomeStyle()},
+			Scripts:  []templ.ComponentScript{HomeScript()},
+			GlobalEl: []templ.Component{HomeGlobalEl()},
 		},
 		ShowNavbar:  true,
 		ShowSidebar: true,
 		ShowFooter:  true,
 		CurrentPage: "home",
 	}) {
-		<div
-			class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-		>
+		<div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 			<div class="w-full mb-1">
 				@component.PageHeader("Homepage")
 				<div class="sm:flex">
-					<div
-						class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700"
-					>
+					<div class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
 						<form class="lg:pr-3" action="#" method="GET">
 							<label for="users-search" class="sr-only">Search</label>
 							<div class="relative mt-1 lg:w-64 xl:w-96">
@@ -115,9 +115,7 @@ templ Home() {
 									</th>
 								</tr>
 							</thead>
-							<tbody
-								class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
-							>
+							<tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 								<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
 									<td class="w-4 p-4">
 										<div class="flex items-center">
@@ -145,26 +143,18 @@ templ Home() {
 											</div>
 										</div>
 									</td>
-									<td
-										class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400"
-									>
+									<td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
 										I love working with React and Flowbites to create efficient and
 										user-friendly interfaces. In my spare time, I enjoys baking, hiking, and
 										spending time with my family.
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										Front-end developer
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										United States
 									</td>
-									<td
-										class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
 										<div class="flex items-center">
 											<div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
 											Active
@@ -218,26 +208,18 @@ templ Home() {
 											</div>
 										</div>
 									</td>
-									<td
-										class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400"
-									>
+									<td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
 										I love working with React and Flowbites to create efficient and
 										user-friendly interfaces. In my spare time, I enjoys baking, hiking, and
 										spending time with my family.
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										Designer
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										Spain
 									</td>
-									<td
-										class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
 										<div class="flex items-center">
 											<div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
 											Active
@@ -291,26 +273,18 @@ templ Home() {
 											</div>
 										</div>
 									</td>
-									<td
-										class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400"
-									>
+									<td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
 										I love working with React and Flowbites to create efficient and
 										user-friendly interfaces. In my spare time, I enjoys baking, hiking, and
 										spending time with my family.
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										React developer
 									</td>
-									<td
-										class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										United Kingdom
 									</td>
-									<td
-										class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white"
-									>
+									<td class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
 										<div class="flex items-center">
 											<div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
 											Active

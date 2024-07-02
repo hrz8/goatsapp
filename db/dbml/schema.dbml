@@ -5,11 +5,12 @@
 Table devices {
   id Int [pk, increment]
   project_id Int [not null]
-  client_id String [not null]
+  client_device_id String [not null]
   name String [not null]
   phone_number String
+  jid String
   description String
-  is_active Boolean [not null]
+  is_active Boolean [not null, default: false]
   custom_attributes Json
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [default: `now()`, not null]

@@ -3,6 +3,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      minHeight: {
+        '90vh': '90vh',
+      },
       zIndex: {
         60: '60',
       },

@@ -28,7 +28,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 		hx-swap="outerHTML"
 		hx-target="#toast"
 		hx-select="#toast"
-		hx-on::after-request="setTimeout(() => location.reload(), 800)"
+		hx-on::after-request="setTimeout(() => location.reload(), 1000)"
 	>
 		for _, proj := range projects {
 			<li>
@@ -44,7 +44,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 						/>
 					</div>
 					<div class="ms-2 text-sm">
-						<label for={ name + "-radio-" + proj.EncodedID } class="font-medium text-gray-900 dark:text-gray-300">
+						<label for={ name + "-radio-" + proj.EncodedID } class="cursor-pointer font-medium text-gray-900 dark:text-gray-300">
 							<div>{ proj.Name }</div>
 							<p
 								id={ name + "-radio-" + proj.EncodedID + "-text" }
@@ -80,28 +80,30 @@ templ ProjectSelector(props ProjectSelectorProps) {
 				<i class="fa-solid fa-caret-down"></i>
 			</span>
 		</button>
-		<!-- Dropdown menu -->
 		<div id={ props.DropdownID } class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-60 dark:bg-gray-700 dark:divide-gray-600">
 			<ul
 				hx-get={ "/projects/selector?name=" + props.Name }
-				hx-trigger="load"
+				hx-trigger={ "click once from:#" + props.ButtonID }
 				hx-target="this"
 				hx-swap="innerHTML"
-				hx-on::after-request="projectSelectorOnLoad('#project-dropdown-navbar')"
+				hx-on::after-request={ onLoadProjectSelector(props.DropdownID) }
 				class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
 				aria-labelledby={ props.ButtonID }
 			></ul>
-			<a
-				href="#"
+			<button
+				class="w-full flex items-center p-3 text-sm font-medium text-blue-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-blue-500 hover:underline"
 				data-modal-target="add-project-modal"
 				data-modal-toggle="add-project-modal"
-				class="add-project-button flex items-center p-3 text-sm font-medium text-blue-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-blue-500 hover:underline"
 			>
 				<span class="mr-2">
 					<i class="fa-solid fa-file-circle-plus"></i>
 				</span>
 				Add new project
-			</a>
+			</button>
 		</div>
 	</div>
+}
+
+script onLoadProjectSelector(dropdownID string) {
+	onLoadProjectSelector('#' +dropdownID)
 }

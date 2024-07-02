@@ -11,7 +11,6 @@ import (
 type Devices struct {
 	ID               int32     `db:"id" json:"id"`
 	ProjectID        int32     `db:"project_id" json:"project_id"`
-	ClientID         string    `db:"client_id" json:"client_id"`
 	Name             string    `db:"name" json:"name"`
 	PhoneNumber      *string   `db:"phone_number" json:"phone_number"`
 	Description      *string   `db:"description" json:"description"`
@@ -19,6 +18,8 @@ type Devices struct {
 	CustomAttributes []byte    `db:"custom_attributes" json:"custom_attributes"`
 	CreatedAt        time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt        time.Time `db:"updated_at" json:"updated_at"`
+	Jid              *string   `db:"jid" json:"jid"`
+	ClientDeviceID   string    `db:"client_device_id" json:"client_device_id"`
 }
 
 type Projects struct {

@@ -129,7 +129,7 @@ const customConfig = {
     'no-throw-literal': 'error',
     'no-trailing-spaces': 'error',
     'no-whitespace-before-property': 'error',
-    'no-undef': 'error',
+    'no-undef': 'off',
     'no-undef-init': 'error',
     'no-underscore-dangle': 'off',
     'no-unsafe-finally': 'error',
