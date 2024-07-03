@@ -1,0 +1,181 @@
+package page
+
+templ DeviceNew() {
+	<div
+		id="add-device-drawer"
+		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
+		tabindex="-1"
+		aria-labelledby="drawer-label"
+		aria-hidden="true"
+	>
+		<h5
+			id="drawer-label"
+			class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400"
+		>
+			New Device
+		</h5>
+		<button
+			type="button"
+			class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+			data-drawer-hide="add-device-drawer"
+		>
+			<i class="fa-solid fa-xmark"></i>
+			<span class="sr-only">Close drawer</span>
+		</button>
+		<div id="add-device-alert" class="hidden items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+			<span class="sr-only">Error Info</span><i class="fa-solid fa-circle-info"></i>
+			<div class="form-alert-text ms-3 text-sm font-medium"></div>
+			<button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" data-dismiss-target="#add-device-alert" aria-label="Close">
+				<span class="sr-only">Close</span><i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+		<form id="add-device-form" hx-indicator=".form-indicator" hx-post="/devices/new" hx-swap="outerHTML" hx-target="#toast" hx-select="#toast">
+			<div class="space-y-4">
+				<div>
+					<label
+						for="add-device-name"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisk"
+					>Name</label>
+					<input
+						type="text"
+						name="name"
+						id="add-device-name"
+						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="Marketing device"
+						required
+					/>
+				</div>
+				<div>
+					<label
+						for="add-client-device-id"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisk"
+					>Client Device ID</label>
+					<input
+						type="text"
+						name="client_device_id"
+						id="add-client-device-id"
+						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="Your integration device id"
+						required
+					/>
+				</div>
+				<div>
+					<label
+						for="add-device-description"
+						class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+					>Description</label>
+					<textarea
+						name="description"
+						id="add-device-description"
+						rows="4"
+						class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+						placeholder="This is a device for marketing's team..."
+					></textarea>
+				</div>
+				<div>
+					<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custom Attributes</label>
+					<div
+						id="custom-attr-editor"
+						style="border: 1px #cacaca solid; border-radius: 8px;"
+					></div>
+					<textarea id="add-device-custom-attr" name="custom_attributes" class="hidden">abc</textarea>
+				</div>
+				<div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
+					<button
+						type="submit"
+						class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+					>
+						Add device
+					</button>
+					@DeviceNewLoading()
+					<button
+						type="button"
+						class="inline-flex w-full justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+						data-drawer-hide="add-device-drawer"
+					>
+						<i class="fa-solid fa-xmark"></i>&nbsp;Cancel
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+}
+
+script DeviceNewScript() {
+	const codeMirror = CodeMirror();
+	codeMirror.init(document.querySelector("#custom-attr-editor"));
+
+	const alert = document.querySelector('#add-device-alert');
+	const form = document.querySelector("#add-device-form");
+
+	function setAlert(msg) {
+		const alertContent = alert.querySelector('.form-alert-text');
+		alertContent.innerHTML = msg;
+
+		alert.classList.remove('hidden');
+		alert.classList.add('flex');
+	}
+
+	function submitBtn(form) {
+		const btn = form.querySelector('button[type="submit"');
+		return {
+			hide() {
+				btn.classList.remove('block');
+				btn.classList.add('hidden');
+			},
+			show() {
+				btn.classList.remove('hidden');
+				btn.classList.add('block');
+			}
+		}
+	}
+
+	form.addEventListener('submit', function(e) {
+		e.preventDefault()
+		const textarea = document.querySelector("#add-device-custom-attr");
+		textarea.value = JSON.stringify(codeMirror.value());
+	});
+	form.addEventListener('htmx:beforeOnLoad', function (e) {
+		if (e.detail.xhr.status === 422) {
+			e.detail.shouldSwap = true;
+			e.detail.isError = false;
+		}
+	});
+	form.addEventListener('htmx:beforeRequest', function(e) {
+		submitBtn(e.detail.elt).hide();
+		alert.classList.remove('flex');
+		alert.classList.add('hidden');
+
+		try {
+			JSON.parse(codeMirror.value());
+		} catch (err) {
+			setAlert('Invalid custom attributes');
+			e.preventDefault();
+			submitBtn(e.detail.elt).show();
+		}
+	});
+	form.addEventListener('htmx:afterRequest', function(e) {
+		submitBtn(e.detail.elt).show();
+
+		if (e.detail.xhr.status === 500) {
+			const {response} = e.detail.xhr;
+			const res = JSON.parse(response);
+			setAlert(res.message);
+			return;
+		}
+
+
+		if (e.detail.xhr.status === 200 || e.detail.xhr.status === 422) {
+			initFlowbite(); // need to re-init since gonna doing getInstance()
+			const toast = FlowbiteInstances.getInstance('Dismiss', 'toast');
+			const drawer = FlowbiteInstances.getInstance('Drawer', 'add-device-drawer');
+
+			if (e.detail.xhr.status === 200) {
+				drawer.hide();
+				e.detail.elt.reset();
+			}
+
+			setTimeout(() => toast.hide(), 5000);
+		}
+	});
+}

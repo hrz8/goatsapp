@@ -28,7 +28,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 		hx-swap="outerHTML"
 		hx-target="#toast"
 		hx-select="#toast"
-		hx-on::after-request="setTimeout(() => location.reload(), 1000)"
+		hx-on::after-request={ reloadProject() }
 	>
 		for _, proj := range projects {
 			<li>
@@ -41,6 +41,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 							checked?={ isProjChecked(proj.EncodedID, active) }
 							value={ proj.EncodedID }
 							class={ isProjCheckedClass(proj.EncodedID, active), "select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" }
+							onclick={ swithProject(name + "-radio-" + proj.EncodedID) }
 						/>
 					</div>
 					<div class="ms-2 text-sm">
@@ -86,10 +87,11 @@ templ ProjectSelector(props ProjectSelectorProps) {
 				hx-trigger={ "click once from:#" + props.ButtonID }
 				hx-target="this"
 				hx-swap="innerHTML"
-				hx-on::after-request={ onLoadProjectSelector(props.DropdownID) }
 				class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
 				aria-labelledby={ props.ButtonID }
-			></ul>
+			>
+				// <li>ProjectSelectorList</li> will be injected HERE by htmx request
+			</ul>
 			<button
 				class="w-full flex items-center p-3 text-sm font-medium text-blue-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-blue-500 hover:underline"
 				data-modal-target="add-project-modal"
@@ -104,6 +106,11 @@ templ ProjectSelector(props ProjectSelectorProps) {
 	</div>
 }
 
-script onLoadProjectSelector(dropdownID string) {
-	onLoadProjectSelector('#' +dropdownID)
+script reloadProject() {
+	setTimeout(() => location.reload(), 1000);
+}
+
+script swithProject(id string) {
+	const radio = document.querySelector('#' + id);
+    document.dispatchEvent(new CustomEvent('project:switch', { detail: { elt: radio } }));
 }
