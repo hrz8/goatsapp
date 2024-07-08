@@ -1,6 +1,7 @@
 import 'flowbite';
 import './dark-mode';
 import './sidebar';
+import './project-switch';
 
 import {initFlowbite} from 'flowbite';
 import {Signal} from 'signal-polyfill';

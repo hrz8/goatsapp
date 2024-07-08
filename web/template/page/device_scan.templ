@@ -1,0 +1,47 @@
+package page
+
+import (
+	"github.com/hrz8/goatsapp/web/template/component"
+)
+
+templ DeviceQRCode(isLoggedIn bool, src string) {
+	if isLoggedIn {
+		<div class="text-center p-4 w-full h-auto text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+			<i class="fa-regular fa-circle-check"></i> You are already logged in.
+		</div>
+	} else {
+		<img src={ src } class="h-auto max-w-lg mx-auto" alt="whatsapp qr code"/>
+	}
+}
+
+templ DeviceScan() {
+	<div
+		id="scan-device-drawer"
+		class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
+		tabindex="-1"
+		aria-labelledby="scan-device-drawer-label"
+		aria-hidden="true"
+	>
+		<h5
+			id="scan-device-drawer-label"
+			class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400"
+		>
+			Scan Device
+		</h5>
+		<button
+			type="button"
+			class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+			data-drawer-hide="scan-device-drawer"
+		>
+			<i class="fa-solid fa-xmark"></i>
+			<span class="sr-only">Close drawer</span>
+		</button>
+		<div id="qr-code-indicator">
+			<div class="text-center">
+				@component.SpinnerMedium()
+			</div>
+		</div>
+		// @DeviceQRCode will be injected here below
+		<div id="qr-code"></div>
+	</div>
+}

@@ -14,7 +14,7 @@ import (
 )
 
 var cmd = &cobra.Command{
-	Use:     "goatsapp",
+	Use:     "Goatsapp",
 	Version: config.Version,
 	Short:   "WhatsApp Unofficial API",
 	Long:    `An open source application of unofficial WhatsApp API based on websocket`,

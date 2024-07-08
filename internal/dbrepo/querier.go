@@ -12,6 +12,7 @@ type Querier interface {
 	CreateNewDevice(ctx context.Context, arg *CreateNewDeviceParams) (int32, error)
 	CreateNewProjects(ctx context.Context, arg *CreateNewProjectsParams) (int32, error)
 	GetDefaultProject(ctx context.Context) (*GetDefaultProjectRow, error)
+	GetDevicesByProjectEncodedID(ctx context.Context, projectID int32) ([]*GetDevicesByProjectEncodedIDRow, error)
 	GetProjectByAlias(ctx context.Context, alias string) (*GetProjectByAliasRow, error)
 	GetProjectByEncodedID(ctx context.Context, dollar_1 string) (*GetProjectByEncodedIDRow, error)
 	GetProjects(ctx context.Context) ([]*GetProjectsRow, error)

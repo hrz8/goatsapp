@@ -6,8 +6,10 @@ import (
 
 	"github.com/hrz8/goatsapp/config"
 	"github.com/hrz8/goatsapp/internal/dbrepo"
+	"github.com/hrz8/goatsapp/pkg/whatsapp"
 	"github.com/hrz8/gofx"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 	"go.uber.org/fx"
 )
 
@@ -30,4 +32,28 @@ func NewDB(lc fx.Lifecycle, logger *gofx.Logger, cfg *config.Config) *pgxpool.Po
 	})
 
 	return conn
+}
+
+func NewWaCli(lc fx.Lifecycle, cfg *config.Config, pool *pgxpool.Pool, ev whatsapp.EventHandler) *whatsapp.Client {
+	db := stdlib.OpenDBFromPool(pool)
+	cli := whatsapp.NewClient(
+		whatsapp.WithDB(db),
+		whatsapp.WithOsInfo(cfg.AppName, cfg.AppVersionNumber),
+		whatsapp.WithEventHandler(ev),
+	)
+	lc.Append(fx.Hook{
+		OnStart: func(_ context.Context) error {
+			err := cli.Upgrade()
+			if err != nil {
+				return err
+			}
+			cli.Restore()
+			return nil
+		},
+		OnStop: func(_ context.Context) error {
+			cli.Backup()
+			return nil
+		},
+	})
+	return cli
 }

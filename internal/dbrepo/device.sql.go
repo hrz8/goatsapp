@@ -41,3 +41,56 @@ func (q *Queries) CreateNewDevice(ctx context.Context, arg *CreateNewDeviceParam
 	err := row.Scan(&id)
 	return id, err
 }
+
+const getDevicesByProjectEncodedID = `-- name: GetDevicesByProjectEncodedID :many
+SELECT
+    id,
+    client_device_id,
+    name,
+    phone_number,
+    jid,
+    description,
+    is_active
+FROM devices
+WHERE
+    project_id = $1
+ORDER BY created_at DESC
+`
+
+type GetDevicesByProjectEncodedIDRow struct {
+	ID             int32   `db:"id" json:"id"`
+	ClientDeviceID string  `db:"client_device_id" json:"client_device_id"`
+	Name           string  `db:"name" json:"name"`
+	PhoneNumber    *string `db:"phone_number" json:"phone_number"`
+	Jid            *string `db:"jid" json:"jid"`
+	Description    *string `db:"description" json:"description"`
+	IsActive       bool    `db:"is_active" json:"is_active"`
+}
+
+func (q *Queries) GetDevicesByProjectEncodedID(ctx context.Context, projectID int32) ([]*GetDevicesByProjectEncodedIDRow, error) {
+	rows, err := q.db.Query(ctx, getDevicesByProjectEncodedID, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetDevicesByProjectEncodedIDRow
+	for rows.Next() {
+		var i GetDevicesByProjectEncodedIDRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ClientDeviceID,
+			&i.Name,
+			&i.PhoneNumber,
+			&i.Jid,
+			&i.Description,
+			&i.IsActive,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

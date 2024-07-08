@@ -37,6 +37,11 @@ func (s *Service) CreateProject(c *gofx.Context, payload *CreateProjectDto) erro
 	var projectSettings []byte
 	var err error
 
+	exist := s.IsAliasExist(c, payload.Alias)
+	if exist {
+		return ErrAliasAlreadyExist
+	}
+
 	settings := &Settings{WebhookURL: payload.WebhookURL}
 	projectSettings, err = json.Marshal(settings)
 	if err != nil {
