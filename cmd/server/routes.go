@@ -47,6 +47,7 @@ func RegisterRouters(
 	router.GET("/projects/selector", project.ListProjectSelector)
 	router.POST("/projects/switch", project.SwitchProject)
 	router.POST("/devices/new", device.CreateDeviceForm)
+	router.GET("/devices/qr", device.RequestQR)
 
 	// fallback
 	router.RouteNotFound("", exception.NotFound)

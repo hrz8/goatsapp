@@ -1,6 +1,7 @@
 package project
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/hrz8/goatsapp/internal/dbrepo"
@@ -52,8 +53,8 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 		)
 	}
 
-	exist := h.svc.IsAliasExist(c, p.Alias)
-	if exist {
+	err = h.svc.CreateProject(c, p)
+	if err != nil && errors.Is(err, ErrAliasAlreadyExist) {
 		return c.RenderView(
 			http.StatusUnprocessableEntity,
 			component.Toast(component.ToastProps{
@@ -62,8 +63,7 @@ func (h *Handler) CreateProjectForm(e echo.Context) error {
 			}),
 		)
 	}
-
-	if err = h.svc.CreateProject(c, p); err != nil {
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 

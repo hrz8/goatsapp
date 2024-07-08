@@ -20,6 +20,38 @@ func isProjCheckedClass(iter string, active string) string {
 	return ""
 }
 
+templ ProjectSelectorItem(name string, active string, proj *dbrepo.GetProjectsRow) {
+	<li>
+		<div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+			<div class="flex items-center h-5">
+				<input
+					id={ name + "-radio-" + proj.EncodedID }
+					name="project_id"
+					type="radio"
+					checked?={ isProjChecked(proj.EncodedID, active) }
+					value={ proj.EncodedID }
+					class={ isProjCheckedClass(proj.EncodedID, active), "select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" }
+					onclick={ swithProject(name + "-radio-" + proj.EncodedID) }
+				/>
+			</div>
+			<div class="ms-2 text-sm">
+				<label for={ name + "-radio-" + proj.EncodedID } class="cursor-pointer font-medium text-gray-900 dark:text-gray-300">
+					<div>{ proj.Name }</div>
+					<p
+						id={ name + "-radio-" + proj.EncodedID + "-text" }
+						class="text-xs font-normal text-gray-500 dark:text-gray-300"
+					>
+						{ proj.Alias }
+						if proj.Description != nil {
+							{ " - "+*proj.Description }
+						}
+					</p>
+				</label>
+			</div>
+		</div>
+	</li>
+}
+
 templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProjectsRow) {
 	<form
 		id={ "form-project-selector-" + name }
@@ -31,35 +63,7 @@ templ ProjectSelectorList(name string, active string, projects []*dbrepo.GetProj
 		hx-on::after-request={ reloadProject() }
 	>
 		for _, proj := range projects {
-			<li>
-				<div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-					<div class="flex items-center h-5">
-						<input
-							id={ name + "-radio-" + proj.EncodedID }
-							name="project_id"
-							type="radio"
-							checked?={ isProjChecked(proj.EncodedID, active) }
-							value={ proj.EncodedID }
-							class={ isProjCheckedClass(proj.EncodedID, active), "select-project w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" }
-							onclick={ swithProject(name + "-radio-" + proj.EncodedID) }
-						/>
-					</div>
-					<div class="ms-2 text-sm">
-						<label for={ name + "-radio-" + proj.EncodedID } class="cursor-pointer font-medium text-gray-900 dark:text-gray-300">
-							<div>{ proj.Name }</div>
-							<p
-								id={ name + "-radio-" + proj.EncodedID + "-text" }
-								class="text-xs font-normal text-gray-500 dark:text-gray-300"
-							>
-								{ proj.Alias }
-								if proj.Description != nil {
-									{ " - "+*proj.Description }
-								}
-							</p>
-						</label>
-					</div>
-				</div>
-			</li>
+			@ProjectSelectorItem(name, active, proj)
 		}
 		<button type="submit" class="hidden" name="switch_project"></button>
 	</form>

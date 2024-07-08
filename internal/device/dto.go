@@ -6,3 +6,7 @@ type CreateDeviceDto struct {
 	ClientDeviceID   string `form:"client_device_id" validate:"required"`
 	CustomAttributes string `form:"custom_attributes" validate:"json"`
 }
+
+type RequestQRDto struct {
+	SessionID string `query:"session_id" validate:"required"`
+}

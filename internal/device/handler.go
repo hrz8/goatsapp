@@ -1,6 +1,7 @@
 package device
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/hrz8/goatsapp/web/template/component"
@@ -23,7 +24,15 @@ func (h *Handler) Index(e echo.Context) error {
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
-	return c.RenderView(http.StatusOK, page.Device())
+
+	ck, err := c.Cookie("project_id")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	projectID := ck.Value
+	devices, _ := h.svc.GetDevicesByProjectID(c, projectID)
+
+	return c.RenderView(http.StatusOK, page.Device(devices))
 }
 
 func (h *Handler) CreateDeviceForm(e echo.Context) error {
@@ -62,4 +71,32 @@ func (h *Handler) CreateDeviceForm(e echo.Context) error {
 			Type:    "success",
 		}),
 	)
+}
+
+func (h *Handler) RequestQR(e echo.Context) error {
+	var err error
+	var qr string
+
+	c, ok := e.(*gofx.Context)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	if !c.IsHtmx() {
+		return echo.NewHTTPError(http.StatusMethodNotAllowed)
+	}
+
+	p := new(RequestQRDto)
+	if err = c.Bind(p); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	qr, err = h.svc.RequestQRCode(c, p.SessionID)
+	if err != nil && errors.Is(err, ErrAlreadyLoggedIn) {
+		return c.RenderView(http.StatusOK, page.DeviceQRCode(true, ""))
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.RenderView(http.StatusOK, page.DeviceQRCode(false, qr))
 }

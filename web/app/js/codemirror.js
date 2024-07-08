@@ -4,6 +4,7 @@ import {json} from '@codemirror/lang-json';
 import {defaultHighlightStyle, syntaxHighlighting} from '@codemirror/language';
 import {EditorState} from '@codemirror/state';
 import {EditorView, keymap} from '@codemirror/view';
+import {dracula} from 'thememirror';
 
 function CodeMirror() {
   let view = null;
@@ -14,6 +15,7 @@ function CodeMirror() {
       }
 
       const extensions = [
+        dracula,
         basicSetup,
         json(),
         history(),
