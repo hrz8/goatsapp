@@ -1,5 +1,5 @@
 export default {
-  content: ['../template/**/*.templ', './node_modules/flowbite/**/*.js'],
+  content: ['../views/**/*.templ', './node_modules/flowbite/**/*.js'],
   darkMode: 'class',
   theme: {
     extend: {

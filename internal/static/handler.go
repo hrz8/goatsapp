@@ -4,7 +4,7 @@ import (
 	"embed"
 	"net/http"
 
-	"github.com/hrz8/goatsapp/web/template/exception"
+	"github.com/hrz8/goatsapp/views/exception"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
 )

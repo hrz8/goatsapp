@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/hrz8/goatsapp/internal/dbrepo"
-	"github.com/hrz8/goatsapp/web/template/component"
-	"github.com/hrz8/goatsapp/web/template/page"
+	"github.com/hrz8/goatsapp/views/component"
+	"github.com/hrz8/goatsapp/views/page"
 	"github.com/hrz8/gofx"
 	"github.com/labstack/echo/v4"
 )

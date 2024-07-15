@@ -18,10 +18,10 @@ import (
 var ServerCmd = &cobra.Command{
 	Use:   "serve [no options!]",
 	Short: "Start application server",
-	Run:   run,
+	RunE:  run,
 }
 
-func run(_ *cobra.Command, _ []string) {
+func run(_ *cobra.Command, _ []string) error {
 	cfg := config.New()
 	app := gofx.NewApp(&gofx.Config{
 		Version:  cfg.AppVersion,
@@ -44,4 +44,6 @@ func run(_ *cobra.Command, _ []string) {
 	app.AddInvokers(func(*http.Server) {})
 
 	app.Start()
+
+	return nil
 }

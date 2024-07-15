@@ -4,7 +4,6 @@ go 1.22.1
 
 require (
 	github.com/a-h/templ v0.2.707
-	github.com/fatih/color v1.17.0
 	github.com/go-playground/validator/v10 v10.22.0
 	github.com/hrz8/gofx v0.1.4
 	github.com/jackc/pgx/v5 v5.6.0
@@ -19,6 +18,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.0.0 // indirect
+	github.com/fatih/color v1.17.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
